@@ -1,0 +1,174 @@
+<head>
+    <style>
+        body {
+            background-color: #c0fff4;
+        }
+
+        .container {
+            height: 100vh;
+            position: relative;
+        }
+
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+        }
+
+        #success {
+            background-color: #b6b8f1;
+            padding: 30px;
+        }
+
+        #header {
+            background-color: #b6b8f1;
+            padding: 30px;
+        }
+
+        #question {
+            background-color: #da80b1;
+            padding: 30px;
+            padding-bottom: 10px;
+        }
+
+        #answer {
+            background-color: #ffc0cb;
+            padding: 30px;
+            padding-top: 20px;
+        }
+
+        #answer input {
+            font-size: 30px;
+        }
+
+        #answer button {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        #playagain {
+            font-size: 20px;
+            margin-top: 10px;
+            background-color: #e7f6d9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="puzzle" class="center">
+            <div id="success" style="display:none;">
+                GOOD JOB !!
+                <div>
+                    <button id="playagain">Play Again</button>
+                </div>
+            </div>
+            <div id="header">
+                Question
+                <span id="questioncount"></span> / <span id="totalquestions"></span>
+                <span id="tryagain" style="display:none;"> - Try Again</span>
+            </div>
+            <div id="question">
+            </div>
+            <div id="answer">
+                <input type="text" id="response">
+            </div>
+        </div>        
+    </div>
+
+    <script src="jquery-3.5.0.min.js"></script>
+    <script src="confetti.js"></script>
+
+    <script>
+        $("#playagain").on("click", start);
+
+        function start() {
+            $("#header").show();
+            $("#question").show();
+            $("#answer").show();
+            $("#success").hide();
+            confetti.stop();
+
+            const numQuestions = 10;
+
+            const questions = [];
+            const answers = [];
+
+            for (let i = 0; i < numQuestions; ++i) {
+                const num1 = Math.floor(Math.random() * 10);
+                const num2 = Math.floor(Math.random() * 10);
+
+                const choice = Math.floor(Math.random() * 4);
+                if (choice == 0) {
+                    // addition
+                    questions.push(`What is ${num1} + ${num2}`);
+                    answers.push(num1 + num2);
+                } else if (choice == 1) {
+                    // subtraction
+                    if (num1 >= num2) {
+                        questions.push(`What is ${num1} - ${num2}`);
+                        answers.push(num1 - num2);
+                    } else {
+                        questions.push(`What is ${num2} - ${num1}`);
+                        answers.push(num2 - num1);
+                    }
+                } else if (choice == 2) {
+                    // multiplication
+                    questions.push(`What is ${num1} x ${num2}`);
+                    answers.push(num1 * num2);
+                } else {
+                    // division
+                    const product = num1 * num2;
+                    questions.push(`What is ${product} / ${num2}`);
+                    answers.push(num1);
+                }
+            }
+
+            let currentQuestion = 0;
+
+            function fillQuestion() {
+                $("#question").text(questions[currentQuestion]);
+                $("#questioncount").text(currentQuestion + 1);
+                $("#totalquestions").text(numQuestions);
+                $("#response").val('');
+                $("#response").off("keyup");
+                $("#response").on("keyup", function(event) {
+                    // Number 13 is the "Enter" key on the keyboard
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        processAnswer();
+                    }
+                });
+            }
+
+            fillQuestion();
+
+            function processAnswer() {
+                const answer = $("#response").val();
+                if (answer == answers[currentQuestion]) {
+                    $("#tryagain").hide();
+                    ++currentQuestion;
+                    if (currentQuestion >= numQuestions) {
+                        $("#header").hide();
+                        $("#question").hide();
+                        $("#answer").hide();
+                        $("#success").show();
+                        confetti.start();
+                    } else {
+                        fillQuestion();
+                    }
+                } else {
+                    $("#tryagain").show();
+                }
+            }
+        }
+
+        start();
+    </script>
+</body>
+
