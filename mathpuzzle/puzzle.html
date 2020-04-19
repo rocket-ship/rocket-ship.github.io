@@ -122,9 +122,11 @@
                     answers.push(num1 * num2);
                 } else {
                     // division
-                    const product = num1 * num2;
-                    questions.push(`What is ${product} / ${num2}`);
-                    answers.push(num1);
+                    const n1 = 1 + Math.floor(Math.random() * 4);
+                    const n2 = 1 + Math.floor(Math.random() * 4);
+                    const product = n1 * n2;
+                    questions.push(`What is ${product} / ${n2}`);
+                    answers.push(n1);
                 }
             }
 
