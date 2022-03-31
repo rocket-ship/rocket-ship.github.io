@@ -784,6 +784,7 @@
       if (solved) {
         confetti.start(5000, 3000, 3000);
         setTimeout(function() {
+          $(".popup-overlay").css('left', ($(document).width() - 460)/2 + 'px');
           $(".popup-overlay").addClass("active");
         }, 4000);
       }
